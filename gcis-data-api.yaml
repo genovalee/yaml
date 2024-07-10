@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: 公司登記基本資料應用一GCIS Data API
+  version: 1.0.0
+servers:
+  - url: https://data.gcis.nat.gov.tw/od/data/api
+paths:
+  /5F64D864-61CB-4D0D-8AD9-492047CC1EA6:
+    get:
+      summary: Retrieve data from GCIS
+      parameters:
+        - in: query
+          name: $format
+          schema:
+            type: string
+            enum:
+              - json
+          required: true
+          description: The format of the response data.
+        - in: query
+          name: $filter
+          schema:
+            type: string
+          required: true
+          example: "Business_Accounting_NO eq 20828393"
+          description: The filter condition for the query.
+        - in: query
+          name: $skip
+          schema:
+            type: integer
+          required: true
+          example: 0
+          description: The number of items to skip before starting to collect the result set.
+        - in: query
+          name: $top
+          schema:
+            type: integer
+          required: true
+          example: 50
+          description: The number of items to return from the result set.
+      responses:
+        '200':
+          description: Successful response with data.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '400':
+          description: Bad request due to invalid parameters or request format.
+        '500':
+          description: Internal server error.
