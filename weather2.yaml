@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: 氣象局36小時天氣預報API
+  version: 1.0.0
+servers:
+  - url: https://opendata.cwa.gov.tw/api
+paths:
+  /v1/rest/datastore/F-C0032-001:
+    get:
+      summary: 取得台灣各地區未來36小時內的天氣預報
+      parameters:
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/Format'
+        - $ref: '#/components/parameters/LocationName'
+      responses:
+        '200':
+          description: 成功取得預報資料
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherForecastResponse'
+        '401':
+          description: 無效的授權碼
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  parameters:
+    Authorization:
+      in: query
+      name: authorization
+      required: true
+      schema:
+        type: string
+      description: API key，用於API認證
+    Format:
+      in: query
+      name: format
+      schema:
+        type: string
+        default: 'json'
+        enum:
+          - json
+          - xml
+      description: 響應資料的格式
+    LocationName:
+      in: query
+      name: locationName
+      schema:
+        type: string
+      description: 地區名稱，用於指定查詢的地區預報
+  schemas:
+    WeatherForecastResponse:
+      type: object
+      properties:
+        success:
+          type: string
+        result:
+          type: object
+          properties:
+            resource_id:
+              type: string
+            fields:
+              type: array
+              items:
+                $ref: '#/components/schemas/Field'
+    Field:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: string
+        error:
+          type: object
+          properties:
+            message:
+              type: string
